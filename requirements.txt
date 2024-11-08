@@ -1,0 +1,4 @@
+decord
+pillow
+tqdm
+torch
