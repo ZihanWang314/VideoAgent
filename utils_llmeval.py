@@ -24,7 +24,7 @@ def get_llm_response(system_prompt, prompt, json_format=True, model="gpt-4-1106-
     if cached_value:
         return cached_value
 
-    print("Not hit cache", key)
+    # print("Not hit cache", key)
 
     for _ in range(3):
         try:
