@@ -9,6 +9,8 @@ from tqdm import tqdm
 from openai import OpenAI
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from PIL import Image
+import torch
+
 
 from utils_clip import CLIPFrameRetriever
 from utils_blip import generate_caption
@@ -136,6 +138,7 @@ def main():
     input_ann_file = "lvb_val_videoagent.json"
     jsonl_file_name = "lvb_val_result.jsonl"
     cache_llm_path = ".cache/llm_cache.jsonl"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
     llm_cache = {}
     if os.path.exists(cache_llm_path):
         with open(cache_llm_path, "r") as f:
@@ -153,7 +156,7 @@ def main():
     print("have already run", len(logs), "pieces of data")
 
     anns = json.load(open(input_ann_file, "r"))
-    blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large").cuda()
+    blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large").to(device).eval()
     blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
     clip_retriever = CLIPFrameRetriever()
 
