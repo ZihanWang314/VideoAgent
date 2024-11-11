@@ -103,21 +103,18 @@ def process_video(args):
     video_path, output_base_dir, device, fps = args
     video_id = Path(video_path).stem
     output_dir = os.path.join(output_base_dir, video_id)
-    try:
+    # try:
         # 看一下output_dir里面的文件数量是不是约等于video_path对应video的秒数，可以用metadata查看工具，会更快
-        cur_len = len(list(Path(output_dir).glob('*.jpg')))
-        vr = VideoReader(video_path)
-        video_len = len(vr) // vr.get_avg_fps()
-        if cur_len == video_len:
-            logger.info(f"Frames already extracted for {video_path}")
-            return video_id
-        else:
-            extract_frames_from_video(video_path, output_dir, device, fps)
-            return video_id
-    except Exception as e:
-        logger.error(f"Error processing video {video_path}: {str(e)}")
-        # clean partially saved files
-        raise e
+    cur_len = len(list(Path(output_dir).glob('*.jpg')))
+    vr = VideoReader(video_path)
+    video_len = len(vr) // vr.get_avg_fps()
+    print(f"cur_len: {cur_len}, video_len: {video_len}")
+    if cur_len >= video_len:
+        logger.info(f"Frames already extracted for {video_path}")
+        return video_id
+    else:
+        extract_frames_from_video(video_path, output_dir, device, fps)
+        return video_id
 
 def main():
     parser = argparse.ArgumentParser(description='Extract frames from videos using Decord')

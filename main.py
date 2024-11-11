@@ -54,6 +54,33 @@ def load_caption(v_id, sample_idx, blip_processor, blip_model, cache_dir=".cache
 
 
 def run_one_question(ann, logs, llm_cache, answer_dir, blip_model, blip_processor, clip_retriever):
+    clip_embed_only = False
+    if clip_embed_only:
+        video_id = ann["video_id"]
+        # Set video-specific cache directory
+        video_cache_path = os.path.join(clip_retriever.cache_dir, f"{video_id}.pt")
+
+        if os.path.exists(video_cache_path):
+            # Load cached tensor for the whole video
+            video_frame_embeddings = torch.load(video_cache_path)
+        else:
+            frames_dir = "frames"
+            if not os.path.exists(os.path.join(frames_dir, video_id)):
+                return
+            # Extract frame features for all frames in the video
+            all_frame_paths = [
+                os.path.join(frames_dir, video_id, i)
+                for i in os.listdir(os.path.join(frames_dir, video_id))
+            ]
+
+            print(f"Extracting features for {video_id}")
+            
+            # Generate embeddings for all frames in one go
+            video_frame_embeddings = clip_retriever.extract_frame_features(all_frame_paths).to(clip_retriever.device)
+            
+            # Save the entire video's frame embeddings as one tensor in .pt format
+            torch.save(video_frame_embeddings, video_cache_path)
+        return
 
     v_id = ann["video_id"]
     # if answer in logs, skip

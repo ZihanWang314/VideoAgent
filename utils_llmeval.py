@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import openai
+import time
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -28,11 +29,16 @@ def get_llm_response(system_prompt, prompt, json_format=True, model="gpt-4-1106-
 
     for _ in range(3):
         try:
+            t_start = time.time()
             completion = openai.chat.completions.create(
                 model=model,
                 response_format={"type": "json_object"} if json_format else None,
                 messages=messages,
             )
+            with open(os.path.join("llm_time.txt"), "a") as f:
+                f.write(f"{time.time() - t_start} seconds\n")
+
+
             response = completion.choices[0].message.content
             if cache_dir is not None:
                 os.makedirs(cache_dir, exist_ok=True)

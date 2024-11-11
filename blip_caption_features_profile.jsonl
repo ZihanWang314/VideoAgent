@@ -1,0 +1,5 @@
+{"cpu_time": "1.183s", "cuda_time": "1.308s", "flops": 713021508719}
+{"cpu_time": "447.139ms", "cuda_time": "557.828ms", "flops": 646874010620}
+{"cpu_time": "455.225ms", "cuda_time": "563.899ms", "flops": 646874010620}
+{"cpu_time": "553.673ms", "cuda_time": "678.940ms", "flops": 713021508719}
+{"cpu_time": "451.699ms", "cuda_time": "561.655ms", "flops": 646874010620}
